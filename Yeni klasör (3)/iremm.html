@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Muhammed → İrem</title>
+  <style>
+    :root{
+      --bg1:#fff7fb;
+      --bg2:#f0f6ff;
+      --card:#ffffff;
+      --accent:#ff5a8f;
+      --muted:#6b7280;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, "Helvetica Neue", Arial, sans-serif;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow: hidden;
+    }
+    .card{
+      width:100%;
+      max-width:860px;
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:0 12px 40px rgba(15,23,42,0.12);
+      padding:28px;
+      position:relative;
+      overflow:hidden;
+      z-index:1;
+    }
+    header{display:flex;gap:16px;align-items:center}
+    .logo{
+      width:64px;height:64px;border-radius:16px;
+      background:linear-gradient(135deg,var(--accent),#7c83ff);
+      color:white;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:28px;
+      box-shadow:0 6px 18px rgba(124,131,255,0.18);
+    }
+    h1{margin:0;font-size:22px}
+    p.lead{margin:6px 0 0;color:var(--muted);font-size:13px}
+
+    .content{display:flex;gap:24px;margin-top:22px;flex-wrap:wrap}
+    .left{flex:1;min-width:240px}
+    .right{flex:1;min-width:240px}
+
+    .frame{
+      background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(250,250,255,0.9));
+      border-radius:12px;padding:16px;border:1px solid rgba(15,23,42,0.04);
+    }
+    .big-btn{
+      display:inline-block;padding:12px 18px;border-radius:999px;background:var(--accent);color:white;font-weight:700;
+      text-decoration:none;cursor:pointer;border:none;font-size:15px;
+      box-shadow:0 8px 20px rgba(255,90,143,0.18);
+    }
+    .mutebtn{padding:10px 14px;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,0.06);cursor:pointer}
+
+    pre.message{
+      white-space:pre-wrap;
+      font-family:inherit;
+      margin:0;
+      font-size:15px;
+      line-height:1.5;
+      color:#0f172a;
+      min-height:120px;
+    }
+
+    footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center}
+
+    .confetti, .hearts-bg {
+      position:absolute;
+      left:0;right:0;top:0;bottom:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:0;
+    }
+
+    .confetti i, .hearts-bg i{
+      position:absolute;display:block;width:10px;height:16px;border-radius:2px;opacity:0.9;
+      transform:translateY(-10vh) rotate(0deg);
+      animation:fall 2200ms linear forwards;
+    }
+
+    @keyframes fall {
+      to { transform:translateY(120vh) rotate(720deg); opacity:0; }
+    }
+
+    @keyframes heartMove {
+      0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity:0; }
+      10% { opacity:1; }
+      100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity:0; }
+    }
+
+    #surprise {
+      position:absolute;top:50%;left:50%;
+      transform:translate(-50%,-50%) scale(0);
+      font-size:48px;color:#ff5a8f;
+      font-weight:bold;text-align:center;
+      pointer-events:none;
+      opacity:0;
+      transition: transform 0.8s ease, opacity 0.8s ease;
+      z-index:10;
+    }
+    #surprise.show {
+      transform:translate(-50%,-50%) scale(1);
+      opacity:1;
+    }
+
+    @media (max-width:640px){
+      .content{flex-direction:column}
+      header{gap:12px}
+      .logo{width:52px;height:52px;font-size:22px}
+      .big-btn{width:100%; text-align:center;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Arka plan müzik -->
+  <audio id="bgMusic" loop>
+    <source src="Eylem-Aktas-Yuregimden-Tut.mp3" type="audio/mpeg">
+    Tarayıcınız audio elementini desteklemiyor.
+  </audio>
+
+  <div class="hearts-bg" id="heartsBg"></div>
+
+  <div class="card" role="main" aria-labelledby="title">
+    <header>
+      <div class="logo">♥</div>
+      <div>
+        <h1 id="title">Muhammed'den İREM'e — Sana söylemek istediğim bir şey var</h1>
+        <p class="lead">Butona basınca mesajım yavaşça belirecek. Her şey senin kontrolünde.</p>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="left">
+        <div class="frame">
+          <h3>Hazır mısın, İREM?</h3>
+          <p style="color:var(--muted)">Butona basınca Muhammed'in mesajı yavaşça yazılacak. İstersen durdurup tekrar gösterebilirsin.</p>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="big-btn" id="revealBtn">Evet, oku</button>
+            <button class="mutebtn" id="resetBtn">Geri al</button>
+            <button class="mutebtn" id="copyBtn" title="Metni kopyala">Kopyala</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="frame">
+          <h4>Mesaj</h4>
+          <pre class="message" id="messageArea">...</pre>
+          <div id="actions" style="margin-top:12px;display:none;gap:8px;">
+            <button class="big-btn" id="askCoffee">Cevap almak isterim</button>
+            <button class="mutebtn" id="downloadCard">Kartı indir (PNG)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>Bu site <strong>Muhammed</strong> tarafından İREM için hazırlandı. Nazik ol :)</footer>
+
+    <div class="confetti" id="confetti"></div>
+  </div>
+
+  <div id="surprise">❤️</div>
+
+  <script>
+    const sender = "Muhammed";
+    const target = "İrem";
+    const fullMessage = "Belki geç kaldım, belki cesaret edemedim… Ama bil istedim, kalbimde hep sen vardın, " + target + ".";
+    const el = document.getElementById('messageArea');
+    const revealBtn = document.getElementById('revealBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const actions = document.getElementById('actions');
+    const confettiRoot = document.getElementById('confetti');
+    const heartsBg = document.getElementById('heartsBg');
+    const surprise = document.getElementById('surprise');
+    const bgMusic = document.getElementById('bgMusic');
+
+    let idx = 0;
+    let typing = false;
+    let timer = null;
+
+    function startTyping() {
+      if (typing) return;
+      typing = true;
+      el.textContent = "";
+      idx = 0;
+      actions.style.display = "none";
+      clearConfetti();
+      clearHearts();
+      surprise.classList.remove('show');
+      tick();
+      bgMusic.play().catch(()=>{});
+    }
+
+    function tick() {
+      if (idx <= fullMessage.length) {
+        el.textContent = fullMessage.slice(0, idx);
+        idx++;
+        timer = setTimeout(tick, 24 + Math.random()*45);
+      } else {
+        typing = false;
+        showActions();
+        launchConfetti();
+        launchHearts();
+        setTimeout(()=> surprise.classList.add('show'), 500);
+      }
+    }
+
+    function stopTyping() { clearTimeout(timer); typing = false; }
+    function reset() {
+      stopTyping();
+      el.textContent = "...";
+      hideActions();
+      clearConfetti();
+      clearHearts();
+      surprise.classList.remove('show');
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+    }
+
+    function showActions(){ actions.style.display = "flex"; actions.style.marginTop="12px"; }
+    function hideActions(){ actions.style.display = "none"; }
+
+    revealBtn.addEventListener('click', startTyping);
+    resetBtn.addEventListener('click', reset);
+    copyBtn.addEventListener('click', function(){
+      navigator.clipboard?.writeText(fullMessage).then(()=> {
+        copyBtn.textContent = "Kopyalandı ✓";
+        setTimeout(()=> copyBtn.textContent = "Kopyala",1400);
+      }).catch(()=> alert("Kopyalama desteklenmiyor."));
+    });
+
+    function launchConfetti(){
+      const colors = ["#ff5a8f","#ffd166","#7c83ff","#4dd0e1","#a0e7a0"];
+      for(let i=0;i<28;i++){
+        const piece = document.createElement('i');
+        piece.style.left = Math.random()*100 + "%";
+        piece.style.top = (-10 - Math.random()*20) + "vh";
+        piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+        piece.style.transform = "rotate(" + (Math.random()*360) + "deg)";
+        piece.style.animationDelay = (Math.random()*0.6) + "s";
+        piece.style.width = (6+Math.random()*10) + "px";
+        piece.style.height = (10+Math.random()*16) + "px";
+        confettiRoot.appendChild(piece);
+        setTimeout(()=> piece.remove(), 2600 + Math.random()*800);
+      }
+    }
+    function clearConfetti(){ confettiRoot.innerHTML=""; }
+
+    function launchHearts(){
+      for(let i=0;i<20;i++){
+        const heart = document.createElement('i');
+        heart.textContent = '❤️';
+        heart.style.position='absolute';
+        heart.style.left = Math.random()*100 + '%';
+        heart.style.fontSize = (10+Math.random()*30)+'px';
+        heart.style.animation = 'heartMove '+(3+Math.random()*2)+'s linear forwards';
+        heartsBg.appendChild(heart);
+        setTimeout(()=> heart.remove(), 5000);
+      }
+    }
+    function clearHearts(){ heartsBg.innerHTML=""; }
+
+  </script>
+</body>
+</html>
